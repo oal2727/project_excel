@@ -1,0 +1,45 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlserver"
+  url      = env("DATABASE_URL")
+}
+
+model asegurado_suscripcion {
+  idAseg_suscripcion  Int                   @id @default(autoincrement())
+  preg1               String?               @db.VarChar(2)
+  preg2               String?               @db.VarChar(2)
+  preg3               String?               @db.VarChar(2)
+  preg4               String?               @db.VarChar(2)
+  preg5               String?               @db.VarChar(2)
+  certificado         certificado[]
+  suscripcion_detalle suscripcion_detalle[]
+
+  @@map("asegurado_suscripcion")
+}
+
+model certificado {
+  idCertificado           Int                    @id @default(autoincrement())
+  nroCertificado          String?                @db.VarChar(10)
+  idContratante           Int?
+  idAsegurado_suscripcion Int?
+  contratoPropuesta       String?                @db.VarChar(255)
+  asegurado_suscripcion   asegurado_suscripcion? @relation(fields: [idAsegurado_suscripcion], references: [idAseg_suscripcion])
+
+  @@map("certificado")
+}
+
+model suscripcion_detalle {
+  idSusc_detalle        Int                    @id @default(autoincrement())
+  pregunta              String?                @db.VarChar(5)
+  descripcion           String?                @db.VarChar(300)
+  idAseg_suscripcion    Int?
+  asegurado_suscripcion asegurado_suscripcion? @relation(fields: [idAseg_suscripcion], references: [idAseg_suscripcion])
+
+  @@map("suscripcion_detalle")
+}
